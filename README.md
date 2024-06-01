@@ -6,7 +6,7 @@ A simple weather application built with React that fetches and displays weather 
 
 - Fetches weather data for a specified city.
 - Displays the weather description in a separate section of the webpage.
-- Includes a default city (London) for initial load.
+- A default city can be added for initial load.
 - Provides error handling for invalid responses or network issues.
 
 ## Demo
