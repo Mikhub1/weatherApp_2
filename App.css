@@ -1,0 +1,64 @@
+#root {
+  max-width: 1280px;
+  margin: auto;
+  text-align: center;
+  padding: 10px;
+  height: 170px;
+
+}
+
+img {
+  max-height: 1500px;
+  max-width: 900px;
+  margin: auto;
+  padding: 10px;
+
+}
+
+#city{
+  padding: 20px;
+  background-color: whitesmoke;
+  width: 50%;
+  margin: 8px 0;
+  box-sizing: border-box;
+  }
+  
+
+body {
+
+  padding: 12px 20px;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+}
+
+Button {
+  max-width: 900px;
+  margin: auto;
+  padding: 10px;
+  background-color: yellow;
+  border-radius: 12px;
+}
+
+#box {
+  padding: 50px;
+  margin: 20px;
+  
+}
+
+.layout {
+  display: flex;
+}
+
+.sidebar {
+  background-color: #d0d0d0;
+  opacity: 0.6;
+  width: 200px;
+  padding: 10px;
+  height: 100vh; /* Full height */
+  position: fixed; /* Fix to the left side */
+  top: 0;
+  left: 0;
+}
+
