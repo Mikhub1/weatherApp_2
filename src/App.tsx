@@ -15,7 +15,7 @@ function App(){
     <div className="layout">
         <div className="sidebar"> 
           <Form ></Form>
-          WeatherData.description
+      
         </div>
       <h1>Homepage</h1>
 
