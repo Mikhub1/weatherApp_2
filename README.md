@@ -11,7 +11,7 @@ A simple weather application built with React that fetches and displays weather 
 
 ## Demo
 
-![Weather App Screenshot](screenshot.png)
+![Weather App Screenshot](Screenshot_2.png)
 
 ## Installation
 
