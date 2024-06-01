@@ -1,28 +1,14 @@
-
-import "./App.css"
-import { useEffect } from 'react';
+import "./App.css";
 import Form from "./Form";
 
-
-
-function App(){
-
-  useEffect(() => {
-    document.title = "Weather App"
-})    
+function App() {
+/*useEffect(() => {
+    document.title = "Weather App";
+  });
+  **/
 
   return (
-    <div className="layout">
-        <div className="sidebar"> 
-          <Form ></Form>
-      
-        </div>
-      <h1>Homepage</h1>
-
-</div>
-
-)
+    <Form></Form>
+    );
 }
-export default App
-
-
+export default App;
