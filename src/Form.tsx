@@ -1,10 +1,6 @@
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useRef, useState, useEffect } from "react";
 import "./App.css";
 import Generate_Url from "./Url";
-
-// Modify the code to return to a default city details that can be overwritten
-// when a new city input is given
-//
 
 // Define the structure of the weather data
 interface WeatherData {
@@ -22,35 +18,19 @@ interface WeatherData {
 
 const Form = () => {
   const nameRef = useRef<HTMLInputElement>(null);
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("Oklahoma City"); // Default city
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string>("");
-  //const [apiUrl, setApiUrl] = useState("");
 
-  console.log(city);
   const fetchWeatherData = (city: string) => {
-    // Call Generate_Url function to get the complete URL
     const apiUrl = Generate_Url() + city;
-    console.log(apiUrl);
 
-    // Make a GET request using the Fetch API
     fetch(apiUrl)
-      .then((response) => {
-        //if (!response.ok) {
-        // Throw an error if response is not ok
-        //we handle the response by checking if it's okay using the response.ok property. If the response is okay,
-        //we convert it to JSON and process the user data.
-        //throw new Error("Network response was not ok");
-        //}
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((cityData) => {
-        // checking validity of response
         if (!cityData.main || !cityData.weather) {
           throw new Error("Invalid response received");
         }
-        console.log(cityData);
-        // Set weather data to state
         setWeatherData({
           main: cityData.main,
           weather: cityData.weather,
@@ -59,7 +39,6 @@ const Form = () => {
       })
       .catch((error) => {
         setError("Error fetching weather data: " + error.message);
-        console.error("Error fetching weather data:", error);
       });
   };
 
@@ -72,6 +51,10 @@ const Form = () => {
     }
   };
 
+  useEffect(() => {
+    fetchWeatherData(city); // Fetch default city weather data on mount
+  }, []);
+
   return (
     <div className="layout">
       <div className="sidebar">
@@ -81,22 +64,53 @@ const Form = () => {
               ref={nameRef}
               id="city"
               className="form-control"
-              placeholder={""}
-              />
-            <button type="submit">Info</button>
+              placeholder="Enter city"
+            />
+            <button type="submit">Get Weather</button>
           </div>
           <div id="box">
-            {weatherData?.main.temp}K<p></p>
-            <p></p>
-            {weatherData?.main.lon}
-            {weatherData?.main.lat}
+            {weatherData && (
+              <>
+                <h1>{Math.round(weatherData.main.temp - 273.15)}°C</h1>
+                <p>Humidity: {weatherData.main.humidity}%</p>
+                <p>Lon: {weatherData.main.lon}, Lat: {weatherData.main.lat}</p>
+              </>
+            )}
             {error && <p>{error}</p>}
           </div>
         </form>
-       </div>
-      <div>
-        <h1>Homepage</h1>
-        {weatherData?.weather[0].description}
+      </div>
+      <div className="main-content">
+        <h1>Weather Forecast</h1>
+        <div className="weather-info">
+          {weatherData?.weather[0].description}
+        </div>
+        <div className="weather-forecast">
+          <div>
+            <h2>Washington D.C</h2>
+            <p>20°C</p>
+          </div>
+          <div>
+            <h2>Oklahoma City</h2>
+            <p>17°C</p>
+          </div>
+          <div>
+            <h2>Philadelphia</h2>
+            <p>14°C</p>
+          </div>
+          <div>
+            <h2>New York City</h2>
+            <p>10°C</p>
+          </div>
+          <div>
+            <h2>South Dakota</h2>
+            <p>-8°C</p>
+          </div>
+          <div>
+            <h2>North Dakota</h2>
+            <p>-9°C</p>
+          </div>
+        </div>
       </div>
     </div>
   );
