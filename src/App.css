@@ -8,27 +8,31 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   font-family: Arial, sans-serif;
 }
 
 .layout {
-  display: flex;
-  width: 90%;
+  width: 300%;
   max-width: 1200px;
   background: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
+  border-radius: 5px;
   overflow: hidden;
+  height: 750px;
+  
 }
 
 .sidebar {
+  height: 750px;
   background-color: #d0d0d0;
-  opacity: 0.9;
-  width: 300px;
+  opacity: 0.8;
+  width: 200px;
   padding: 20px;
+  position: fixed;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
+  top: 0;
+  left: 0;
 }
 
 .sidebar input, .sidebar button {
@@ -49,9 +53,8 @@ body {
   background-color: white;
   opacity: 0.8;
   width: 100%;
-  padding: 20px;
   margin-top: 20px;
-  border-radius: 5px;
+  border-radius:0px;
   text-align: center;
 }
 
@@ -63,28 +66,38 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: top;
 }
 
 .weather-info {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 200%;
+  height: 100%;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .weather-info h1 {
   margin: 0;
 }
 
-.weather-forecast {
+.weather-forecast { 
   display: flex;
   justify-content: space-around;
   width: 100%;
-  margin-top: 20px;
 }
 
-.weather-forecast div {
-  flex: 1;
-  text-align: center;
+.weather-details {
+  display: flex;
+  justify-content: space-around;
+  bottom: 20px;
+  position: absolute;
+  width: 80%;
+  /* text-align: top; */
 }
