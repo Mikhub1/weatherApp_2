@@ -30,7 +30,7 @@ interface WeatherData {
 
 const Form = () => {
   const nameRef = useRef<HTMLInputElement>(null);
-  const [city, setCity] = useState(""); // Default city
+  const [city, setCity] = useState("Vancouver"); // Default city
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string>("");
   console.log(city)
@@ -38,7 +38,6 @@ const Form = () => {
   const fetchWeatherData = (city: string) => {
     const apiUrl = Generate_Url() + city;
     console.log(apiUrl)
-
 
     fetch(apiUrl)
       .then((response) =>{
@@ -77,8 +76,8 @@ const Form = () => {
 
     useEffect(() => {
       document.title = "Weather App";
-      fetchWeatherData("Ibadan");
-    });
+      fetchWeatherData(city); // Fetch weather data for the initial city
+    }); 
 
   return (
     <div className="layout">
