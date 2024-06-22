@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState, useEffect} from "react";
+import React, { FormEvent, useRef, useState, useEffect } from "react";
 import "./App.css";
 import Generate_Url from "./Url";
 
@@ -12,16 +12,16 @@ interface WeatherData {
     country: string;
     sunrise: number;
     sunset: number;
-  }
+  };
   coord: {
     lon: number;
     lat: number;
-  }
-  wind: { 
-    deg: number
-    gust: number
-    speed: number
-  }
+  };
+  wind: {
+    deg: number;
+    gust: number;
+    speed: number;
+  };
   weather: {
     main: string;
     description: string;
@@ -30,59 +30,91 @@ interface WeatherData {
 
 const Form = () => {
   const nameRef = useRef<HTMLInputElement>(null);
-  const [city, setCity] = useState("Vancouver"); // Default city
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [error, setError] = useState<string>("");
+  const [city, setCity] = useState(""); // Default city
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null); // Weather data for the selected city
+  const [cityWeatherData, setCityWeatherData] = useState<Record<string, WeatherData | null>>({}); // Weather data for multiple cities
+  const [error, setError] = useState<string>(""); // Error message state
+  const cities = ["Lagos", "Gander", "Florida", "Montana", "Edmonton", "Calgary"];
   console.log(city)
+  // Function to fetch weather data for a specific city
+  const fetchWeatherData = async (city: string) => {
+    const apiUrl = Generate_Url() + city; // Generate API URL for the given city
+    console.log(city);
+    console.log(apiUrl);
 
-  const fetchWeatherData = (city: string) => {
-    const apiUrl = Generate_Url() + city;
-    console.log(apiUrl)
-
-    fetch(apiUrl)
-      .then((response) =>{
-         return response.json()}
-        )
-        .then((cityData) => {
-          // checking validity of response
-          if (!cityData.main || !cityData.weather) {
-            throw new Error("Invalid response received");
-          }
-          console.log(cityData);
-          // Set weather data to state
-          setWeatherData({
-            main: cityData.main,
-            weather: cityData.weather,
-            coord: cityData.coord,
-            sys: cityData.sys,
-            wind: cityData.wind
-          });
-          setError(""); // Reset error state
-        })
-        .catch((error) => {
-          setError("Error fetching weather data: " + error.message);
-          console.error("Error fetching weather data:", error);
-        });
-    };
-  
-    const handleSubmit = (event: FormEvent) => {
-      event.preventDefault();
-      if (nameRef.current !== null) {
-        const newCity = nameRef.current.value;
-        setCity(newCity);
-        fetchWeatherData(newCity);
+    try {
+      const response = await fetch(apiUrl); // Fetch data from API
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
       }
-    };
+      // Pauses execution of an async function until a promise settles, then resumes and returns the result.
+      const cityData = await response.json(); // Parse JSON response
 
-    useEffect(() => {
-      document.title = "Weather App";
-      fetchWeatherData(city); // Fetch weather data for the initial city
-    }); 
+      // Check if response is valid
+      if (!cityData.main || !cityData.weather) {
+        throw new Error("Invalid response received");
+      }
+
+      // Update city-specific weather data in state
+      setCityWeatherData((tempData) => ({...tempData,[city]: 
+        {
+          main: cityData.main,
+          weather: cityData.weather,
+          coord: cityData.coord,
+          sys: cityData.sys,
+          wind: cityData.wind,
+        },
+      }));
+
+      setWeatherData({
+        main: cityData.main,
+        weather: cityData.weather,
+        coord: cityData.coord,
+        sys: cityData.sys,
+        wind: cityData.wind,
+      });
+  
+      setError(""); // Reset error state
+    } 
+    catch (error) {
+      setError("Error fetching weather data: " + error); // Update error message state
+      console.error("Error fetching weather data:", error);
+    }
+  };
+
+  // Function to handle form submission
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault(); // Prevent default form submission
+
+    // Check if nameRef.current is not null and get the value
+    if (nameRef.current) {
+      const newCity = nameRef.current.value
+
+      // Clear error state when submitting new valid city
+      setError("");
+
+      // Update selected city state
+      setCity(newCity);
+
+      // Fetch weather data for the entered city
+      fetchWeatherData(newCity);
+    }
+  };
+
+  useEffect(() => {
+    document.title = "Weather App"; // Update document title
+    fetchWeatherData("Ibadan"); // Fetch weather data for the initial city ("Ibadan")
+
+    // Fetch weather data for additional cities
+    cities.forEach((city) => {
+      fetchWeatherData(city);
+    });
+  }, []); // Run once when the component mounts
 
   return (
     <div className="layout">
       <div className="sidebar">
-        <form onSubmit={(event) => handleSubmit(event)}>
+        <form onSubmit={handleSubmit}>
           <div>
             <input
               ref={nameRef}
@@ -92,9 +124,9 @@ const Form = () => {
             />
             <button type="submit">Get Weather</button>
           </div>
-          <div id="box">  
+          <div id="box">
             <h2>
-              {weatherData  ? `${Math.round(weatherData?.main.temp - 273.15)}°C`: "N/A"} {"+/- 3%"}
+              {weatherData ? `${Math.round(weatherData.main.temp - 273.15)}°C` : "N/A"} {"+/- 3%"}
             </h2>
             <p>Humidity: {weatherData?.main.humidity}%</p>
             <p>Lon: {weatherData?.coord.lon}, Lat: {weatherData?.coord.lat}</p>
@@ -109,7 +141,6 @@ const Form = () => {
             <p>Wind: {weatherData?.wind.deg}, speed: {weatherData?.wind.speed}{"km"}</p>
             {error && <p>{error}</p>}
           </div>
-
         </form>
       </div>
 
@@ -119,30 +150,14 @@ const Form = () => {
           {weatherData?.weather[0].description}
         </div>
         <div className="weather-details">
-          <div>
-            <h2>Lagos</h2>
-            <p>20°C</p>
-          </div>
-          <div>
-            <h2>Gander</h2>
-            <p>17°C</p>
-          </div>
-          <div>
-            <h2>Wakajaye</h2>
-            <p>14°C</p>
-          </div>
-          <div>
-            <h2>Monatan</h2>
-            <p>10°C</p>
-          </div>
-          <div>
-            <h2>Akobo</h2>
-            <p>-8°C</p>
-          </div>
-          <div>
-            <h2>Bodija</h2>
-            <p>-9°C</p>
-          </div>
+          {cities.map((city) => (
+            <div key={city}>
+              <h2>{city}</h2>
+              <p>
+                {cityWeatherData[city]? `${Math.round(cityWeatherData[city]!.main.temp - 273.15)}°C`: "NA"}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
